@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <head>
+        <title>Attack Dashboard</title>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+</head>
+
+
+<body>
+
+    <!-- TOP HEADER -->s
+    <div class="header">
+        <h1> Cyber Attack Chain Analytics</h1>
+        <div class="top-actions">
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".txt,.json" required>
+                <button type="submit">Upload</button>
+            </form>
+
+            <a href="/report" class="report-btn">Generate Report</a>
+        </div>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-container">
+
+        <div class="kpi-card">
+            <h3>Risk Level</h3>
+            <h2 class="{{ risk_level|lower }}">
+                {{ risk_level }}
+            </h2>
+            <p>Score: {{ risk_score }}</p>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Next Attack</h3>
+            <h2>{{ next_attack }}</h2>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Total Alerts</h3>
+            <h2>{{ alerts|length }}</h2>
+        </div>
+
+        <div class="kpi-card">
+            <h3>Anomalies</h3>
+            <h2>{{ anomalies|length }}</h2>
+        </div>
+
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="dashboard">
+
+        <div class="card">
+            <h2>Alerts</h2>
+            <ul>
+                {% for alert in alerts %}
+                <li>{{ alert.ip }} - {{ alert.type }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Anomalies</h2>
+            <ul>
+                {% for a in anomalies %}
+                <li>{{ a.ip }} - {{ a.event }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Predictions</h2>
+            <ul>
+                {% for p in predictions %}
+                <li>{{ p.ip }} → {{ p.current }} → {{ p.predicted_next }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Response</h2>
+            <ul>
+                {% for r in responses %}
+                <li>{{ r }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card full">
+            <h2>Attack Graph</h2>
+            <svg width="100%" height="400"></svg>
+        </div>
+
+    </div>
+
+    <script>
+        const graphData = `{{ graph_data | tojson }}`;
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>

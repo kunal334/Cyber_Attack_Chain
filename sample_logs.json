@@ -1,0 +1,4 @@
+[
+    { "ip": "192.168.1.10", "event": "port_scan" },
+    { "ip": "192.168.1.20", "event": "failed_login" }
+]
